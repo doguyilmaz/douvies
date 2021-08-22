@@ -9,10 +9,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
 	// Check the header
 	// Token in the header with Bearer
-	if (
-		req.headers.authorization &&
-		req.headers.authorization.startsWith('Bearer')
-	) {
+	if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
 		token = req.headers.authorization.split(' ')[1];
 	}
 	// Token with cookies
@@ -32,21 +29,16 @@ exports.protect = asyncHandler(async (req, res, next) => {
 		req.user = await User.findById(decoded.id);
 		next();
 	} catch (err) {
-		return next(
-			new CustomError('Token is not valid, authorization denied!', 401)
-		);
+		return next(new CustomError('Token is not valid, authorization denied!', 401));
 	}
 });
 
 // Grant access to specific roles
 exports.authorize = (...roles) => {
 	return (req, res, next) => {
-		if (!roles.includes(req.user.role)) {
+		if (!roles.includes(req?.user?.role)) {
 			return next(
-				new CustomError(
-					`Role: <${req.user.role}> is not authorized to access this content!`,
-					403
-				)
+				new CustomError(`Role: <${req?.user?.role || 'none'}> is not authorized to access this content!`, 403)
 			);
 		}
 		next();
