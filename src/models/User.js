@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+const { roles } = require('../utils/constants');
+
 const UserSchema = new mongoose.Schema(
 	{
 		name: {
@@ -19,10 +21,7 @@ const UserSchema = new mongoose.Schema(
 			type: String,
 			required: [true, 'Email is required.'],
 			unique: true,
-			match: [
-				/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-				'Please add a valid email.',
-			],
+			match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please add a valid email.'],
 		},
 		password: {
 			type: String,
@@ -34,8 +33,8 @@ const UserSchema = new mongoose.Schema(
 		resetPasswordExpire: Date,
 		role: {
 			type: String,
-			enum: ['user', 'admin'],
-			default: 'user',
+			enum: Object.values(roles),
+			default: roles.USER_ROLE,
 		},
 		profile: {
 			type: mongoose.Schema.Types.ObjectId,
@@ -70,9 +69,7 @@ UserSchema.pre('save', function (next) {
 	this.name
 		.trim()
 		.split(' ')
-		.forEach(
-			(el) => (tempName += el.charAt(0).toUpperCase() + el.slice(1) + ' ')
-		);
+		.forEach((el) => (tempName += el.charAt(0).toUpperCase() + el.slice(1) + ' '));
 	this.name = tempName.trim();
 	next();
 });
@@ -118,10 +115,7 @@ UserSchema.methods.isMatchedPassword = async function (passwordInput) {
 UserSchema.methods.getResetPasswordToken = function () {
 	const resetToken = crypto.randomBytes(20).toString('hex'); // Generate token
 
-	this.resetPasswordToken = crypto
-		.createHash('sha256')
-		.update(resetToken)
-		.digest('hex'); // Hash Token & Set to resetPasswordToken field in db
+	this.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex'); // Hash Token & Set to resetPasswordToken field in db
 
 	this.resetPasswordExpire = Date.now() + 10 * 60 * 1000; // Set Expire Time for Token
 

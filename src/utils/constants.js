@@ -26,6 +26,7 @@ exports.genres = [
 	'War',
 	'Western',
 ];
+
 exports.definitions = [
 	'Captain Phillips',
 	'Waste of time',
@@ -36,18 +37,26 @@ exports.definitions = [
 	'Will be added more...',
 ];
 
-exports.orderTypeOptions = [
-	'newest',
-	'oldest',
-	'imdbRate',
-	'personalRate',
-	'year',
-];
+exports.orderTypeOptions = {
+	NEWEST: 'newest',
+	OLDEST: 'oldest',
+	IMDB_RATE: 'imdbRate',
+	PERSONAL_RATE: 'personalRate',
+	YEAR: 'year',
+};
 
-exports.privacyOptions = ['public', 'private', 'unlisted'];
+exports.privacyOptions = {
+	PUBLIC: 'public',
+	PRIVATE: 'private',
+	UNLISTED: 'unlisted',
+};
 
 exports.roles = {
-	ROLE: 'role',
 	ADMIN_ROLE: 'admin',
 	USER_ROLE: 'user',
+};
+
+exports.listModels = {
+	SERIE: 'serie',
+	MOVIE: 'movie',
 };

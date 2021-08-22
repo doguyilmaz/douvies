@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { privacyOptions, orderTypeOptions } = require('../utils/constants');
+const { privacyOptions, orderTypeOptions, listModels } = require('../utils/constants');
 
 const ListSchema = new mongoose.Schema(
 	{
@@ -18,20 +18,18 @@ const ListSchema = new mongoose.Schema(
 		},
 		contentModel: {
 			type: String,
-			required: true,
-			enum: ['Movie', 'Serie'],
+			enum: Object.values(listModels),
+			default: listModels.MOVIE,
 		},
 		privacy: {
 			type: String,
-			required: true,
-			default: 'public',
-			enum: [...privacyOptions],
+			enum: Object.values(privacyOptions),
+			default: privacyOptions.PUBLIC,
 		},
 		orderType: {
 			type: String,
-			required: true,
-			default: 'newest',
-			enum: [...orderTypeOptions],
+			enum: Object.values(orderTypeOptions),
+			default: orderTypeOptions.NEWEST,
 		},
 		createdAt: { type: Date, default: Date.now },
 		updatedAt: { type: Date, default: Date.now },
