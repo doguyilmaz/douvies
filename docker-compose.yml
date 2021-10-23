@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  db:
+    image: 'mongo'
+    restart: unless-stopped
+    env_file: ./.env
+    container_name: 'db'
+    environment:
+      - MONGODB_NAME=$MONGODB_NAME
+      - MONGODB_USER=$MONGODB_USER
+      - MONGODB_PASSWORD=$MONGODB_PASSWORD
+    ports:
+      - $MONGO_LOCAL_PORT:$MONGO_DOCKER_PORT
+    volumes:
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - ./mongo-volume:/data/db
+    networks:
+      - backend
+
+  api:
+    container_name: 'api'
+    depends_on:
+      - db
+    build: ./backend
+    restart: unless-stopped
+    env_file: ./.env
+    environment:
+      - NODE_ENV=$NODE_ENV
+      - PORT=4500
+      - MONGODB_URI_LOCAL=mongodb://db:27017/douvies
+      - MONGODB_URI_CLOUD=$MONGODB_URI_CLOUD
+      - JWT_SECRET=$JWT_SECRET
+      - theMVDBAPI=$theMVDBAPI
+      - JWT_EXPIRE_TIME=$JWT_EXPIRE_TIME
+      - JWT_COOKIE_EXPIRE_TIME=$JWT_COOKIE_EXPIRE_TIME
+    ports:
+      - $NODE_DOCKER_PORT:$NODE_LOCAL_PORT
+    networks:
+      - backend
+      - frontend
+
+  ui:
+    build:
+      context: ./frontend
+    # env_file: ./.env
+    ports:
+      - '3000:3000'
+    container_name: 'ui'
+    stdin_open: true
+    volumes:
+      - ./frontend:/frontend
+      - /frontend/node_modules
+
+volumes:
+  db:
+networks:
+  backend:
+    # driver: bridge
+  frontend:

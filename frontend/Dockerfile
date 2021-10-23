@@ -22,7 +22,7 @@
 
 FROM node:10
 
-WORKDIR /douvies-frontend
+WORKDIR /frontend
 
 COPY package.json ./
 

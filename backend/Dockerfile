@@ -1,6 +1,6 @@
 FROM node:14
 
-WORKDIR /douvies-api
+WORKDIR /backend
 COPY package.json .
 RUN npm install
 COPY . .
